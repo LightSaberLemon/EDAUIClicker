@@ -104,7 +104,6 @@
       </Unit>
       <Unit>
         <Filename Value="..\UIClicker\ClickerUtils\ClickerExtraUtils.pas"/>
-        <FRMtype Value="0"/>
         <IsPartOfProject Value="True"/>
       </Unit>
     </Units>

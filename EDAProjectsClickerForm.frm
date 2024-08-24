@@ -1,5 +1,5 @@
 object frmEDAProjectsClickerForm: TfrmEDAProjectsClickerForm
-  Left = 342
+  Left = 344
   Height = 680
   Top = 114
   Width = 1119
@@ -117,7 +117,7 @@ object frmEDAProjectsClickerForm: TfrmEDAProjectsClickerForm
     0079800006F98000003981000001800000018000000180000001FFFFFFFFFFFF
     FFFF
   }
-  LCLVersion = '8.3'
+  LCLVersion = '8.4'
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy

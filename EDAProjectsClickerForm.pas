@@ -367,6 +367,7 @@ type
     function HandleOnFileExists(const AFileName: string): Boolean;
     procedure HandleLogMissingServerFile(AMsg: string);
     procedure HandleOnLoadMissingFileContent(AFileName: string; AFileContent: TMemoryStream);
+    procedure HandleOnDenyFile(AFileName: string);
 
     procedure CreateRemainingUIComponents;
     procedure AddToLog(s: string);
@@ -839,6 +840,16 @@ begin
   end;
 
   DoOnLoadMissingFileContent(ExpandedFileName, AFileContent);
+end;
+
+
+procedure TfrmEDAProjectsClickerForm.HandleOnDenyFile(AFileName: string);
+var
+  Response: string;
+begin                //This handler is executed by a different thread, not the UI one.
+  AddToLogFromThread('Sending a "' + CRECmd_TerminateWaitingForFileAvailability + '" command to server, because of denied file: "' + AFileName + '".');
+  Response := TerminateWaitingForFileAvailability(ConfiguredRemoteAddress, CREParam_TerminateWaitingLoop_ValueAll, 0, False);
+  AddToLogFromThread('"TerminateWaitingForFileAvailability" response: ' + Response);
 end;
 
 
@@ -1509,7 +1520,7 @@ begin
   AOpenDialog := TSelectDirectoryDialog.Create(nil);
   try
     AOpenDialog.Filter := 'Clicker template files (*.clktmpl)|*.clktmpl|All files (*.*)|*.*';
-    AOpenDialog.InitialDir := StringReplace(lbePathToTemplates.Text, '$AppDir$', ParamStr(0), [rfReplaceAll]);
+    AOpenDialog.InitialDir := StringReplace(lbePathToTemplates.Text, '$AppDir$', ExtractFileDir(ParamStr(0)), [rfReplaceAll]);
 
     if AOpenDialog.Execute then
     begin
@@ -1584,6 +1595,7 @@ begin
   FPollForMissingServerFiles.OnFileExists := HandleOnFileExists;
   FPollForMissingServerFiles.OnLogMissingServerFile := HandleLogMissingServerFile;
   FPollForMissingServerFiles.OnLoadMissingFileContent := HandleOnLoadMissingFileContent;
+  FPollForMissingServerFiles.OnDenyFile := HandleOnDenyFile;
   FPollForMissingServerFiles.Start;
 
   AddToLog('Started "missing files" monitoring thread.');
